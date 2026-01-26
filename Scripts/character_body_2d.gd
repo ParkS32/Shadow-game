@@ -3,13 +3,10 @@ extends CharacterBody2D
 # Movement tuning
 @export var speed := 200.0
 @export var gravity := 900.0
-@export var min_jump_force := -100.0  # Short tap
-@export var max_jump_force := -300.0  # Full hold
-@export var max_jump_hold := 0.3      # Seconds to reach full jump
-
-var jump_pressed := false
-var jump_hold_time := 0.0
-var jump_active := false  # true only during a valid jump
+@export var jump_force := -280.0 # Slightly increased base force
+@export var jump_gravity_scale := 0.4 # Scale gravity by this while holding jump
+@export var fall_gravity_scale := 1.5 # Scale gravity by this when falling or released early
+@export var jump_cut_multiplier := 0.5 # Factor to multiply velocity when jump is released early
 
 # Clone / recording settings
 @export var clone_scene: PackedScene = preload("res://Scenes/Main_Character.tscn")
@@ -28,8 +25,11 @@ var replay_data: Array = []
 var replay_index: int = 0
 var is_replaying: bool = false
 
-#variables for PointClone
+#Animation
+@onready var anim = $AnimatedSprite2D
 
+var on_ladder := false
+var climb_speed := 150.0
 
 #shadow
 var buffer_max_time := 3.0
@@ -37,40 +37,68 @@ var buffer_max_frames := int(buffer_max_time / Engine.get_physics_ticks_per_seco
 
 	
 func _physics_process(delta):
-
 	Global.record_input()
-
+	var input_vector = Vector2.ZERO
+	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+	# Flip sprite based on direction
+	if input_vector.x < 0:
+		anim.flip_h = true
+	elif input_vector.x > 0:
+		anim.flip_h = false
+	#idle Checker
+	if input_vector == Vector2.ZERO:
+		anim.play("Idle")
 	# Horizontal movement — constant speed, no sliding
 	velocity.x = 0.0
-	if Input.is_action_pressed("move_left"):
-		velocity.x = -speed
-	elif Input.is_action_pressed("move_right"):
-		velocity.x = speed
-	# Gravity
-	velocity.y += gravity * delta
+	if on_ladder:
+		# Vertical movement on ladder
+		velocity.y = 0.0
+		if Input.is_action_pressed("jump") or Input.is_action_pressed("ui_up"): # W
+			velocity.y = - climb_speed
+			anim.play("Walking")
+			print("[Player] Climbing UP")
+		elif Input.is_action_pressed("Down") or Input.is_action_pressed("ui_down"): # S
+			velocity.y = climb_speed
+			anim.play("Walking")
+			print("[Player] Climbing DOWN")
+		
+		# Allow horizontal movement on ladder too? Let's keep it simple for now or allow slight movement
+		if Input.is_action_pressed("move_left"):
+			velocity.x = - speed * 0.5
+		elif Input.is_action_pressed("move_right"):
+			velocity.x = speed * 0.5
+	else:
+		if Input.is_action_pressed("move_left"):
+			velocity.x = - speed
+			anim.play("Walking")
+		elif Input.is_action_pressed("move_right"):
+			velocity.x = speed
+			anim.play("Walking")
+		
+		# Dynamic Gravity
+		var current_gravity = gravity
+		if velocity.y < 0: # Rising
+			if Input.is_action_pressed("jump"):
+				current_gravity *= jump_gravity_scale # Lighter gravity while holding
+			else:
+				current_gravity *= fall_gravity_scale # Heavier gravity if released
+		else: # Falling
+			current_gravity *= fall_gravity_scale # Faster fall for weightier feel
+			
+		velocity.y += current_gravity * delta
 
 	# Jump logic
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		jump_pressed = true
-		jump_active = true
-		jump_hold_time = 0.0
-		
-	# Continue jump while held and within time
-	if jump_active and Input.is_action_pressed("jump"):
-		jump_hold_time += delta
-		var t: float = clamp(jump_hold_time / max_jump_hold, 0.0, 1.0)
-		velocity.y = lerp(min_jump_force, max_jump_force, t)
-
-	# End jump if released or max time reached
-	if Input.is_action_just_released("jump") or jump_hold_time >= max_jump_hold:
-		jump_active = false
+	if Input.is_action_just_pressed("jump") and is_on_floor() and not on_ladder:
+		velocity.y = jump_force
+		print("[Player] Jumped")
 
 	move_and_slide()
+	
 
-
-
-
-
+	for i in get_slide_collision_count():
+		var col = get_slide_collision(i)
+		if col.get_collider() is RigidBody2D:
+			col.get_collider().apply_central_impulse(-col.get_normal() * 10)
 
 
 func _start_recording() -> void:

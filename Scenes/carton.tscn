@@ -10,6 +10,7 @@ size = Vector2(23, 22)
 
 [node name="Carton" type="RigidBody2D"]
 physics_material_override = SubResource("PhysicsMaterial_8togn")
+mass = 0.5
 lock_rotation = true
 linear_damp = 1.0
 angular_damp = 10.0

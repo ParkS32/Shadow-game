@@ -1,43 +1,129 @@
-[gd_scene load_steps=6 format=3 uid="uid://d31r43aw4ra4l"]
+[gd_scene load_steps=18 format=3 uid="uid://d31r43aw4ra4l"]
 
 [ext_resource type="Script" uid="uid://bsv2lxweu2ncs" path="res://Scripts/character_body_2d.gd" id="1_mnji8"]
-[ext_resource type="Texture2D" uid="uid://o8i0dimljotb" path="res://Assets/icon.svg" id="2_o8cir"]
+[ext_resource type="Texture2D" uid="uid://dc71wd6je1t27" path="res://Assets/Tile assets/idle animation/idleani1 sprite sheet.png" id="2_o8cir"]
+[ext_resource type="Texture2D" uid="uid://c43ebrd6yi3a7" path="res://Assets/Tile assets/walking animation/walkani1 sprite sheet.png" id="3_m6q3y"]
 [ext_resource type="PackedScene" uid="uid://ldcsly6qqcoq" path="res://Pause Menu/PauseMenu.tscn" id="3_o8cir"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m6q3y"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(0, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fla84"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(2000, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u40a0"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(4000, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_res4j"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(0, 2000, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l32m3"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(2000, 2000, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h7xal"]
+atlas = ExtResource("2_o8cir")
+region = Rect2(4000, 2000, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e7gwl"]
+atlas = ExtResource("3_m6q3y")
+region = Rect2(0, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogfuv"]
+atlas = ExtResource("3_m6q3y")
+region = Rect2(2000, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4s7rc"]
+atlas = ExtResource("3_m6q3y")
+region = Rect2(4000, 0, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38qe4"]
+atlas = ExtResource("3_m6q3y")
+region = Rect2(0, 2000, 2000, 2000)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qd0xh"]
+atlas = ExtResource("3_m6q3y")
+region = Rect2(2000, 2000, 2000, 2000)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0bwfo"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_o8cir")
+"texture": SubResource("AtlasTexture_m6q3y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fla84")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u40a0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_res4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l32m3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h7xal")
 }],
 "loop": true,
-"name": &"default",
-"speed": 5.0
+"name": &"Idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e7gwl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ogfuv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4s7rc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qe4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qd0xh")
+}],
+"loop": true,
+"name": &"Walking",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_et8ae"]
+size = Vector2(6.7872024, 22.28421)
 
 [node name="Main_Character" type="CharacterBody2D"]
 scale = Vector2(0.23320158, 0.23976608)
 script = ExtResource("1_mnji8")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-17.152542, -41.70732)
+scale = Vector2(0.202, 0.176)
 sprite_frames = SubResource("SpriteFrames_0bwfo")
+animation = &"Walking"
+frame_progress = 0.092652544
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(6.317972, 5.240506)
+position = Vector2(2.555928e-07, -8.341462)
+scale = Vector2(6.317972, 5.240504)
 shape = SubResource("RectangleShape2D_et8ae")
 
 [node name="PauseMenu" parent="." instance=ExtResource("3_o8cir")]
-offset_left = 188.67798
-offset_top = -367.02435
-offset_right = 188.67798
-offset_bottom = -367.02435
+offset_left = -51.457634
+offset_top = 16.682926
+offset_right = -51.457634
+offset_bottom = 16.682926
 
 [node name="Camera2D" type="Camera2D" parent="PauseMenu"]
-position = Vector2(-26.953995, 52.432068)
+position = Vector2(6.738499, -2.9790936)
 scale = Vector2(0.1, 0.1)
-zoom = Vector2(4, 4)
+zoom = Vector2(2.32, 2.32)
 position_smoothing_enabled = true
 
 [node name="Label" type="Label" parent="."]

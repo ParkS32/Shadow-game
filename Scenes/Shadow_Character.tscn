@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://7bahjjk53nft"]
+[gd_scene load_steps=8 format=3 uid="uid://7bahjjk53nft"]
 
 [ext_resource type="Script" uid="uid://drr5yybcjkdu0" path="res://Scripts/shadow_character.gd" id="1_7cqvm"]
 [ext_resource type="Texture2D" uid="uid://c2jbi0lhu1oaw" path="res://Assets/Ninja Frog/Double Jump (32x32).png" id="2_7cqvm"]
+[ext_resource type="Texture2D" uid="uid://d3f66jdw1dct3" path="res://Assets/Ninja Frog/Fall (32x32).png" id="2_iswtg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_iswtg"]
 atlas = ExtResource("2_7cqvm")
@@ -11,15 +12,18 @@ region = Rect2(0, 0, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("2_iswtg")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_iswtg")
 }],
 "loop": true,
 "name": &"new_animation",
-"speed": 5.0
-}, {
-"frames": [],
-"loop": true,
-"name": &"new_animation_1",
 "speed": 5.0
 }]
 
@@ -37,10 +41,10 @@ script = ExtResource("1_7cqvm")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(-2.3841858e-07, -2.3841858e-07)
+position = Vector2(2.842171e-14, -16.682928)
 scale = Vector2(3.8861232, 3.4648428)
 sprite_frames = SubResource("SpriteFrames_0bwfo")
-animation = &"new_animation"
+animation = &"Idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(2.1440678, -8.341464)
